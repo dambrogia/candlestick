@@ -7,9 +7,9 @@ use Dambrogia\Candlestick\Concern\CandlestickException;
 class Candlestick
 {
     protected $open;
-    protected $close;
     protected $high;
     protected $low;
+    protected $close;
     protected $date;
 
     protected $readable = [ 'open', 'high', 'low', 'close', 'date' ];
