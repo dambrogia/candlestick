@@ -188,6 +188,15 @@ class Collection
     }
 
     /**
+     * Get the last item in the collection.
+     * @return Candlestick
+     */
+    public function last(): Candlestick
+    {
+        return $this->get($this->size() - 1);
+    }
+
+    /**
      * Get a new collection from a range of items within the collection.
      * @param int $start
      * @param int $stop
@@ -232,5 +241,25 @@ class Collection
     public function getCandleMethods(): array
     {
         return $this->candleMethods;
+    }
+
+    /**
+     * Check the SMA relative to the most recent candle.
+     * Return the percentage of difference between the two.
+     * Ex: SMA = 100, Latest Close = 105, Returns 5% because latest is 5%
+     * above SMA.
+     * @return float
+     */
+    public function relativeSMA(): float
+    {
+        $sma = trader_sma($this->closes());
+        $sma = $sma[count($sma)]; // not zero indexed!
+
+        $latest = $this->get($this->size() - 1)->getClose();
+
+        // Ex:
+        // 0.01 = (101/100) - 1; -0.01 = (99/100) - 1
+        // 0.05 = (105/100) - 1; -0.05 = (95/100) - 1
+        return $percentage = ($latest / $sma) - 1;
     }
 }
