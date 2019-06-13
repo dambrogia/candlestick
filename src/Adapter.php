@@ -42,7 +42,7 @@ class Adapter
      * Adapt the given fields in the array to the expected fields for a
      * candlestick. Return the candlestick.
      * @param array $candle
-     * @return array
+     * @return Candlestick
      * @throws AdapterException
      */
     public function adapt(array $candle): Candlestick
