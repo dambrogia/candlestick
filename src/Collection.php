@@ -9,20 +9,67 @@ class Collection
     protected $items = [];
     protected $adapter;
     protected $candleMethods = [
-        '2crows', '3blackcrows', '3inside', '3linestrike', '3outside',
-        '3starsinsouth', '3whitesoldiers', 'abandonedbaby', 'advanceblock',
-        'belthold', 'breakaway', 'closingmarubozu', 'concealbabyswall',
-        'counterattack','darkcloudcover','doji', 'dojistar', 'dragonflydoji',
-        'engulfing', 'eveningdojistar', 'eveningstar', 'gapsidesidewhite',
-        'gravestonedoji', 'hammer', 'hangingman', 'harami', 'haramicross',
-        'highwave', 'hikkake', 'hikkakemod', 'homingpigeon', 'identical3crows',
-        'inneck', 'invertedhammer', 'kicking', 'kickingbylength', 'ladderbottom',
-        'longleggeddoji', 'longline', 'marubozu', 'matchinglow', 'mathold',
-        'morningdojistar', 'morningstar', 'onneck', 'piercing', 'rickshawman',
-        'risefall3methods', 'separatinglines', 'shootingstar', 'shortline',
-        'spinningtop', 'stalledpattern', 'sticksandwich', 'takuri', 'tasukigap',
-        'thrusting', 'tristar', 'unique3river', 'upsidegap2crows',
-        'xsidegap3methods',
+        'trader_cdl2crows',
+        'trader_cdl3blackcrows',
+        'trader_cdl3inside',
+        'trader_cdl3linestrike',
+        'trader_cdl3outside',
+        'trader_cdl3starsinsouth',
+        'trader_cdl3whitesoldiers',
+        'trader_cdlabandonedbaby',
+        'trader_cdladvanceblock',
+        'trader_cdlbelthold',
+        'trader_cdlbreakaway',
+        'trader_cdlclosingmarubozu',
+        'trader_cdlconcealbabyswall',
+        'trader_cdlcounterattack',
+        'trader_cdldarkcloudcover',
+        'trader_cdldoji',
+        'trader_cdldojistar',
+        'trader_cdldragonflydoji',
+        'trader_cdlengulfing',
+        'trader_cdleveningdojistar',
+        'trader_cdleveningstar',
+        'trader_cdlgapsidesidewhite',
+        'trader_cdlgravestonedoji',
+        'trader_cdlhammer',
+        'trader_cdlhangingman',
+        'trader_cdlharami',
+        'trader_cdlharamicross',
+        'trader_cdlhighwave',
+        'trader_cdlhikkake',
+        'trader_cdlhikkakemod',
+        'trader_cdlhomingpigeon',
+        'trader_cdlidentical3crows',
+        'trader_cdlinneck',
+        'trader_cdlinvertedhammer',
+        'trader_cdlkicking',
+        'trader_cdlkickingbylength',
+        'trader_cdlladderbottom',
+        'trader_cdllongleggeddoji',
+        'trader_cdllongline',
+        'trader_cdlmarubozu',
+        'trader_cdlmatchinglow',
+        'trader_cdlmathold',
+        'trader_cdlmorningdojistar',
+        'trader_cdlmorningstar',
+        'trader_cdlonneck',
+        'trader_cdlpiercing',
+        'trader_cdlrickshawman',
+        'trader_cdlrisefall3methods',
+        'trader_cdlseparatinglines',
+        'trader_cdlshootingstar',
+        'trader_cdlshortline',
+        'trader_cdlspinningtop',
+        'trader_cdlstalledpattern',
+        'trader_cdlsticksandwich',
+        'trader_cdltakuri',
+        'trader_cdltasukigap',
+        'trader_cdlthrusting',
+        'trader_cdltristar',
+        'trader_cdlunique3river',
+        'trader_cdlupsidegap2crows',
+        'trader_cdlxsidegap3methods',
     ];
 
     public function __construct(array $items = [], Adapter $adapter = null)
@@ -88,6 +135,50 @@ class Collection
     }
 
     /**
+     * Get all the open values in the collection.
+     * @return array
+     */
+    public function opens(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->getOpen();
+        }, $this->items);
+    }
+
+    /**
+     * Get all the high values in the collection.
+     * @return array
+     */
+    public function highs(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->getHigh();
+        }, $this->items);
+    }
+
+    /**
+     * Get all the low values in the collection.
+     * @return array
+     */
+    public function lows(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->getLow();
+        }, $this->items);
+    }
+
+    /**
+     * Get all the close values in the collection.
+     * @return array
+     */
+    public function closes(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->getClose();
+        }, $this->items);
+    }
+
+    /**
      * Get the amount of items in the collection.
      * @return int
      */
@@ -117,5 +208,29 @@ class Collection
         $new = (new self([], $this->adapter));
         $new->setItems($items, true);
         return $new;
+    }
+
+    /**
+     * Allow for trader_* functions.
+     * @param string $name
+     * @param array $arguments
+     * @return void
+     */
+    public function __call($name, $arguments)
+    {
+        if (\in_array($name, $this->candleMethods)) {
+            return $name(...$this->getGrouped());
+        }
+
+        throw new CollectionException('Invalid method name.');
+    }
+
+    /**
+     * Get the available candle methods to call.
+     * @return array
+     */
+    public function getCandleMethods(): array
+    {
+        return $this->candleMethods;
     }
 }
