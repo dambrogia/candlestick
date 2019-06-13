@@ -40,7 +40,7 @@ class Collection
      * @param boolean $quick
      * @return void
      */
-    public function setItems(array $items, bool $quick = false)
+    public function setItems(array $items, bool $quick = false): void
     {
         $this->items = $quick ? $items : $this->adapter->map($items);
     }
@@ -59,7 +59,7 @@ class Collection
      * @param integer $index
      * @return Candlestick
      */
-    public function getItem(int $index): Candlestick
+    public function get(int $index): Candlestick
     {
         return $this->items[$index];
     }
@@ -85,5 +85,37 @@ class Collection
         }
 
         return [ $open, $high, $low, $close ];
+    }
+
+    /**
+     * Get the amount of items in the collection.
+     * @return int
+     */
+    public function size(): int
+    {
+        return count($this->items);
+    }
+
+    /**
+     * Get a new collection from a range of items within the collection.
+     * @param int $start
+     * @param int $stop
+     * @return self
+     */
+    public function range(int $start, int $stop): self
+    {
+        if ($start > $stop || $start < 0 || $stop >= $this->size()) {
+            throw new CollectionException('Invalid range paramters.');
+        }
+
+        $items = [];
+
+        for ($i = $start; $i <= $stop; $i++) {
+            $items[] = $this->get($i);
+        }
+
+        $new = (new self([], $this->adapter));
+        $new->setItems($items, true);
+        return $new;
     }
 }

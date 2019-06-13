@@ -19,22 +19,12 @@ final class CollectionTest extends TestCase
 
     public function testGroupedData(): void
     {
-        $data = [
+        $items = $this->map([
             [0, 1, 2, 3],
             [0, 1, 2, 3],
             [4, 5, 6, 7],
             [4, 5, 6, 7],
-        ];
-
-        $items = array_map(function ($innerArr) {
-            return [
-                'open' => $innerArr[0],
-                'high' => $innerArr[1],
-                'low' => $innerArr[2],
-                'close' => $innerArr[3],
-                'date' => '01/01/2019',
-            ];
-        }, $data);
+        ]);
 
         $collection = new Collection;
         $collection->setItems($items);
@@ -47,5 +37,39 @@ final class CollectionTest extends TestCase
         ];
 
         $this->assertEquals($expected, $collection->getGrouped());
+    }
+
+    public function testRange()
+    {
+        $items = $this->map([
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [2, 2, 2, 2],
+        ]);
+        $collection = new Collection($items);
+
+        $new = $collection->range(0,1);
+
+        $this->assertTrue($new->size() == 2);
+        $this->assertTrue($new->get(1)->open == 1);
+    }
+
+
+    /**
+     * Helper for creating collections to test with.
+     * @param array $array
+     * @return array
+     */
+    private function map(array $array): array
+    {
+        return array_map(function ($innerArr) {
+            return [
+                'open' => $innerArr[0],
+                'high' => $innerArr[1],
+                'low' => $innerArr[2],
+                'close' => $innerArr[3],
+                'date' => '01/01/2019',
+            ];
+        }, $array);
     }
 }
