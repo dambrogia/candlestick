@@ -54,7 +54,9 @@ class Adapter
         foreach ($fields as $field) {
             $mapped = $this->map[$field];
 
-            if ($field === 'date' && $mapped === false) {
+            if (is_callable($mapped)) {
+                $values[] = $mapped($candle);
+            } elseif ($field === 'date' && $mapped === false) {
                 // Allow for skipping date field.
                 $values[] = '';
             } elseif (! isset($candle[$mapped])) {
