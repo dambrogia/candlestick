@@ -62,10 +62,10 @@ class Collection
         $close = [];
 
         foreach ($this->items as $candle) {
-            $open[] = $candle->getOpen();
-            $high[] = $candle->getHigh();
-            $low[] = $candle->getLow();
-            $close[] = $candle->getClose();
+            $open[] = $candle->open();
+            $high[] = $candle->high();
+            $low[] = $candle->low();
+            $close[] = $candle->close();
         }
 
         return [ $open, $high, $low, $close ];
@@ -78,7 +78,7 @@ class Collection
     public function opens(): array
     {
         return array_map(function ($candle) {
-            return $candle->getOpen();
+            return $candle->open();
         }, $this->items);
     }
 
@@ -89,7 +89,7 @@ class Collection
     public function highs(): array
     {
         return array_map(function ($candle) {
-            return $candle->getHigh();
+            return $candle->high();
         }, $this->items);
     }
 
@@ -100,7 +100,7 @@ class Collection
     public function lows(): array
     {
         return array_map(function ($candle) {
-            return $candle->getLow();
+            return $candle->low();
         }, $this->items);
     }
 
@@ -111,7 +111,7 @@ class Collection
     public function closes(): array
     {
         return array_map(function ($candle) {
-            return $candle->getClose();
+            return $candle->close();
         }, $this->items);
     }
 
