@@ -48,7 +48,7 @@ final class CollectionTest extends TestCase
         ]);
         $collection = new Collection($items);
 
-        $new = $collection->range(0,1);
+        $new = $collection->range(0, 1);
 
         $this->assertTrue($new->size() == 2);
         $this->assertTrue($new->get(1)->open == 1);
