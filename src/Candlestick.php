@@ -21,14 +21,16 @@ class Candlestick
      * @param float $high
      * @param float $low
      * @param float $close
+     * @param int $volume
      * @param string $date (optional)
      */
-    public function __construct($open, $high, $low, $close, $date = '')
+    public function __construct($open, $high, $low, $close, $volume, $date = '')
     {
         $this->open = (float) $open;
         $this->high = (float) $high;
         $this->low = (float) $low;
         $this->close = (float) $close;
+        $this->volume = (int) $volume;
         $this->date = (string) $date;
     }
 

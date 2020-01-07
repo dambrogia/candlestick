@@ -8,71 +8,8 @@ class Collection
 {
     protected $items = [];
     protected $adapter;
-    protected $candleMethods = [
-        'trader_cdl2crows',
-        'trader_cdl3blackcrows',
-        'trader_cdl3inside',
-        'trader_cdl3linestrike',
-        'trader_cdl3outside',
-        'trader_cdl3starsinsouth',
-        'trader_cdl3whitesoldiers',
-        'trader_cdlabandonedbaby',
-        'trader_cdladvanceblock',
-        'trader_cdlbelthold',
-        'trader_cdlbreakaway',
-        'trader_cdlclosingmarubozu',
-        'trader_cdlconcealbabyswall',
-        'trader_cdlcounterattack',
-        'trader_cdldarkcloudcover',
-        'trader_cdldoji',
-        'trader_cdldojistar',
-        'trader_cdldragonflydoji',
-        'trader_cdlengulfing',
-        'trader_cdleveningdojistar',
-        'trader_cdleveningstar',
-        'trader_cdlgapsidesidewhite',
-        'trader_cdlgravestonedoji',
-        'trader_cdlhammer',
-        'trader_cdlhangingman',
-        'trader_cdlharami',
-        'trader_cdlharamicross',
-        'trader_cdlhighwave',
-        'trader_cdlhikkake',
-        'trader_cdlhikkakemod',
-        'trader_cdlhomingpigeon',
-        'trader_cdlidentical3crows',
-        'trader_cdlinneck',
-        'trader_cdlinvertedhammer',
-        'trader_cdlkicking',
-        'trader_cdlkickingbylength',
-        'trader_cdlladderbottom',
-        'trader_cdllongleggeddoji',
-        'trader_cdllongline',
-        'trader_cdlmarubozu',
-        'trader_cdlmatchinglow',
-        'trader_cdlmathold',
-        'trader_cdlmorningdojistar',
-        'trader_cdlmorningstar',
-        'trader_cdlonneck',
-        'trader_cdlpiercing',
-        'trader_cdlrickshawman',
-        'trader_cdlrisefall3methods',
-        'trader_cdlseparatinglines',
-        'trader_cdlshootingstar',
-        'trader_cdlshortline',
-        'trader_cdlspinningtop',
-        'trader_cdlstalledpattern',
-        'trader_cdlsticksandwich',
-        'trader_cdltakuri',
-        'trader_cdltasukigap',
-        'trader_cdlthrusting',
-        'trader_cdltristar',
-        'trader_cdlunique3river',
-        'trader_cdlupsidegap2crows',
-        'trader_cdlxsidegap3methods',
-    ];
 
-    public function __construct(array $items = [], Adapter $adapter = null)
+    public function __construct(array $items = [], ?Adapter $adapter = null)
     {
         $this->adapter = is_null($adapter) ? new Adapter() : $adapter;
         $this->setItems($items);
@@ -117,7 +54,7 @@ class Collection
      *      $result = trader_cdldoji(...$grouped);
      * @return array
      */
-    public function getGrouped(): array
+    public function grouped(): array
     {
         $open = [];
         $high = [];
@@ -188,6 +125,15 @@ class Collection
     }
 
     /**
+     * Get the first item in the collection.
+     * @return Candlestick
+     */
+    public function first(): Candlestick
+    {
+        return $this->get(0);
+    }
+
+    /**
      * Get the last item in the collection.
      * @return Candlestick
      */
@@ -217,49 +163,5 @@ class Collection
         $new = (new self([], $this->adapter));
         $new->setItems($items, true);
         return $new;
-    }
-
-    /**
-     * Allow for trader_* functions.
-     * @param string $name
-     * @param array $arguments
-     * @return void
-     */
-    public function __call($name, $arguments)
-    {
-        if (\in_array($name, $this->candleMethods)) {
-            return $name(...$this->getGrouped());
-        }
-
-        throw new CollectionException('Invalid method name.');
-    }
-
-    /**
-     * Get the available candle methods to call.
-     * @return array
-     */
-    public function getCandleMethods(): array
-    {
-        return $this->candleMethods;
-    }
-
-    /**
-     * Check the SMA relative to the most recent candle.
-     * Return the percentage of difference between the two.
-     * Ex: SMA = 100, Latest Close = 105, Returns 5% because latest is 5%
-     * above SMA.
-     * @return float
-     */
-    public function relativeSMA(): float
-    {
-        $sma = trader_sma($this->closes());
-        $sma = $sma[count($sma)]; // not zero indexed!
-
-        $latest = $this->get($this->size() - 1)->getClose();
-
-        // Ex:
-        // 0.01 = (101/100) - 1; -0.01 = (99/100) - 1
-        // 0.05 = (105/100) - 1; -0.05 = (95/100) - 1
-        return $percentage = ($latest / $sma) - 1;
     }
 }
