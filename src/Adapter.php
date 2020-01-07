@@ -2,6 +2,7 @@
 
 namespace Dambrogia\Candlestick;
 
+use Closure;
 use Dambrogia\Candlestick\Concern\AdapterException;
 
 class Adapter
@@ -22,8 +23,21 @@ class Adapter
             'high' => 'high',
             'low' => 'low',
             'close' => 'close',
+            'volume' => 'volume',
             'date' => 'date',
         ];
+    }
+
+    /**
+     * Minor helper function to cache the keys returned from the map.
+     *
+     * @return array
+     */
+    protected function getMapKeys(): array
+    {
+        return $this->mapKeys = empty($this->mapKeys)
+            ? array_keys($this->getDefaultMap())
+            : $this->mapKeys;
     }
 
     /**
@@ -39,6 +53,21 @@ class Adapter
     }
 
     /**
+     * Get a mapped a field value within the candle based on the key provided.
+     *
+     * @param string $key
+     * @return void
+     */
+    protected function getMapped(string $key)
+    {
+        if (! isset($this->map[$key])) {
+            throw new AdapterException('Missing mapped field: ' . $key);
+        }
+
+        return $this->map[$key];
+    }
+
+    /**
      * Adapt the given fields in the array to the expected fields for a
      * candlestick. Return the candlestick.
      * @param array $candle
@@ -47,24 +76,10 @@ class Adapter
      */
     public function adapt(array $candle): Candlestick
     {
-        // The order here matters, needs to match Candlestick constructor order.
-        $fields = array_keys($this->getDefaultMap());
-        $values = [];
-
-        foreach ($fields as $field) {
-            $mapped = $this->map[$field];
-
-            if (is_callable($mapped)) {
-                $values[] = $mapped($candle);
-            } elseif ($field === 'date' && $mapped === false) {
-                // Allow for skipping date field.
-                $values[] = '';
-            } elseif (! isset($candle[$mapped])) {
-                throw new AdapterException('Missing mapped field: ' . $mapped);
-            } else {
-                $values[] = $candle[$mapped];
-            }
-        }
+        $values = array_map(function ($field) use ($candle) {
+            $mapped = $this->getMapped($field);
+            return $mapped instanceof Closure ? $mapped($candle) : $candle[$mapped];
+        }, $this->getMapKeys());
 
         return new Candlestick(...$values);
     }

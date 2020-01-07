@@ -28,6 +28,7 @@ final class AdapterTest extends TestCase
             'low' => 'low',
             'close' => 'close',
             'date' => 'date',
+            'volume' => 'volume',
         ];
 
         $capsMap = [
@@ -36,6 +37,7 @@ final class AdapterTest extends TestCase
             'low' => 'LOW',
             'close' => 'CLOSE',
             'date' => 'DATE',
+            'volume' => 'VOLUME',
         ];
 
         $defaultAdapter = new Adapter($defaultMap);

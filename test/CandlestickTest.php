@@ -12,35 +12,37 @@ final class CandlestickTest extends TestCase
     {
         $this->assertInstanceOf(
             Candlestick::class,
-            new Candlestick(1, 2, 3, 4, '01/01/2018')
+            new Candlestick(1, 2, 3, 4, 100, time())
         );
     }
 
     public function testGetters(): void
     {
-        $candle = new Candlestick(1, 2, 3, 4, '01/01/2018');
+        $t = time();
+        $candle = new Candlestick(1, 2, 3, 4, 100, $t);
 
-        $this->assertEquals(1, $candle->getOpen());
-        $this->assertEquals(2, $candle->getHigh());
-        $this->assertEquals(3, $candle->getLow());
-        $this->assertEquals(4, $candle->getClose());
+        $this->assertEquals(1, $candle->open());
+        $this->assertEquals(2, $candle->high());
+        $this->assertEquals(3, $candle->low());
+        $this->assertEquals(4, $candle->close());
+        $this->assertEquals(100, $candle->volume());
+        $this->assertEquals($t, $candle->date());
     }
 
     public function testMagicGet(): void
     {
-        $candle = new Candlestick(1, 2, 3, 4, '01/01/2018');
+        $t = time();
+        $candle = new Candlestick(1, 2, 3, 4, 100, $t);
 
-        $this->assertEquals(1, $candle->open);
-        $this->assertEquals(2, $candle->high);
-        $this->assertEquals(3, $candle->low);
-        $this->assertEquals(4, $candle->close);
-    }
+        $this->assertEquals(1, $candle->o);
+        $this->assertEquals(2, $candle->h);
+        $this->assertEquals(3, $candle->l);
+        $this->assertEquals(4, $candle->c);
+        $this->assertEquals(100, $candle->v);
+        $this->assertEquals($t, $candle->d);
 
-    public function testException(): void
-    {
+        // Invalid Value.
         $this->expectException(CandlestickException::class);
-
-        $candle = new Candlestick(1, 2, 3, 4, '01/01/2018');
-        $candle->invalidProperty;
+        $candle->z;
     }
 }
