@@ -36,7 +36,7 @@ final class CollectionTest extends TestCase
             [3.0, 3.0, 7.0, 7.0],
         ];
 
-        $this->assertEquals($expected, $collection->getGrouped());
+        $this->assertEquals($expected, $collection->grouped());
     }
 
     public function testRange()
@@ -68,7 +68,8 @@ final class CollectionTest extends TestCase
                 'high' => $innerArr[1],
                 'low' => $innerArr[2],
                 'close' => $innerArr[3],
-                'date' => '01/01/2019',
+                'volume' => 100,
+                'date' => time(),
             ];
         }, $array);
     }

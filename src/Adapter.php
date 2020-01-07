@@ -2,6 +2,7 @@
 
 namespace Dambrogia\Candlestick;
 
+use Closure;
 use Dambrogia\Candlestick\Concern\AdapterException;
 
 class Adapter
@@ -77,7 +78,7 @@ class Adapter
     {
         $values = array_map(function ($field) use ($candle) {
             $mapped = $this->getMapped($field);
-            return is_callable($mapped) ? $mapped($candle) : $candle[$mapped];
+            return $mapped instanceof Closure ? $mapped($candle) : $candle[$mapped];
         }, $this->getMapKeys());
 
         return new Candlestick(...$values);

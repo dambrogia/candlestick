@@ -40,7 +40,7 @@ final class CandlestickTest extends TestCase
     {
         $this->expectException(CandlestickException::class);
 
-        $candle = new Candlestick(1, 2, 3, 4, '01/01/2018');
+        $candle = new Candlestick(1, 2, 3, 4, 5, '01/01/2018');
         $candle->invalidProperty;
     }
 }
