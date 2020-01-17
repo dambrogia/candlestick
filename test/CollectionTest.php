@@ -13,7 +13,7 @@ final class CollectionTest extends TestCase
     {
         $this->assertInstanceOf(
             Collection::class,
-            new Collection
+            new Collection()
         );
     }
 
@@ -26,7 +26,7 @@ final class CollectionTest extends TestCase
             [4, 5, 6, 7],
         ]);
 
-        $collection = new Collection;
+        $collection = new Collection();
         $collection->setItems($items);
 
         $expected = [

@@ -12,7 +12,7 @@ final class AdapterTest extends TestCase
 
     public function testCanCreate(): void
     {
-        $this->assertInstanceOf(Adapter::class, new Adapter);
+        $this->assertInstanceOf(Adapter::class, new Adapter());
     }
 
     /**
