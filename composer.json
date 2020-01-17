@@ -23,7 +23,7 @@
     },
     "scripts": {
         "test": "phpunit --bootstrap vendor/autoload.php test",
-        "lint": "phpcs --standard=PSR2 src test",
-        "lint:fix": "phpcbf --standard=PSR2 src test"
+        "lint": "phpcs --standard=PSR12 src test",
+        "lint:fix": "phpcbf --standard=PSR12 src test"
     }
 }
