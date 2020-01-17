@@ -49,11 +49,35 @@ final class CollectionTest extends TestCase
         $collection = new Collection($items);
 
         $new = $collection->range(0, 1);
+        $new2 = $collection->range(-1);
 
         $this->assertTrue($new->size() == 2);
         $this->assertTrue($new->get(1)->open() == 1);
+
+        $this->assertTrue($new2->size() == 1);
+        $this->assertTrue($new2->first()->open() == 2);
     }
 
+    public function testFilter()
+    {
+        $items = $this->map([
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [2, 2, 2, 2],
+        ]);
+
+
+        $x = new Collection($items);
+        $y = $x->filter(function ($candle) {
+            return $candle->close() > 0;
+        });
+
+        // filter mutates the object, but also returns the same object (self).
+        $this->assertTrue($x == $y);
+        $this->assertTrue($x->size() == 2);
+        $this->assertTrue($x->first()->open() == 1);
+        $this->assertTrue($x->last()->open() == 2);
+    }
 
     /**
      * Helper for creating collections to test with.
