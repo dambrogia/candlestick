@@ -8,14 +8,19 @@ class Candlestick
 {
     /** @var float */
     protected $open;
+
     /** @var float */
     protected $high;
+
     /** @var float */
     protected $low;
+
     /** @var float */
     protected $close;
+
     /** @var int */
     protected $volume;
+
     /** @var int */
     protected $date;
 

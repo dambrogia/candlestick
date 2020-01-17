@@ -22,11 +22,12 @@ class Collection
      * strongrly recommended and required for adapting/mapping fields.
      * @param array $items
      * @param boolean $quick
-     * @return void
+     * @return self
      */
-    public function setItems(array $items, bool $quick = false): void
+    public function setItems(array $items, bool $quick = false): self
     {
         $this->items = $quick ? $items : $this->adapter->map($items);
+        return $this;
     }
 
     /**
@@ -116,6 +117,49 @@ class Collection
     }
 
     /**
+     * Get all the volume values in the collection.
+     * @return array
+     */
+    public function volumes(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->volume();
+        }, $this->items);
+    }
+
+    /**
+     * Get all the date values in the collection.
+     * @return array
+     */
+    public function dates(): array
+    {
+        return array_map(function ($candle) {
+            return $candle->dates();
+        }, $this->items);
+    }
+
+    /**
+     * Filter the candles based on a provided function. If the function returns
+     * true, the existing candle will remain in the collection. If the function
+     * returns false, the exist candle will be removed from the collection.
+     *
+     * @param callable $fn
+     * @return self
+     */
+    public function filter(callable $fn): self
+    {
+        $new = [];
+
+        foreach ($this->getItems() as $candle) {
+            if ($fn($candle)) {
+                $new[] = $candle;
+            }
+        }
+
+        return $this->setItems($new, true);
+    }
+
+    /**
      * Get the amount of items in the collection.
      * @return int
      */
@@ -148,13 +192,14 @@ class Collection
      * @param int $stop
      * @return self
      */
-    public function range(int $start, int $stop): self
+    public function range(int $start, int $stop = 0): self
     {
-        if ($start > $stop || $start < 0 || $stop >= $this->size()) {
+        $stop = $stop == 0 ? $this->size() - 1 : $stop;
+        $start = $start < 0 ? $this->size() + $start : $start;
+
+        if ($start > $stop || $stop >= $this->size()) {
             throw new CollectionException('Invalid range paramters.');
         }
-
-        $items = [];
 
         for ($i = $start; $i <= $stop; $i++) {
             $items[] = $this->get($i);
