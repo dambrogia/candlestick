@@ -98,8 +98,6 @@ final class CollectionTest extends TestCase
                 $unserialized->get($i)->open()
             );
         }
-
-
     }
 
     /**

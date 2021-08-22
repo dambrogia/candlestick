@@ -30,7 +30,8 @@ class Collection implements JsonSerializable
 
     /**
      * This will create a new collection with the default map return those items
-     * from the new collection into the existing map to retain the original map.
+     * from the new collection into the existing collection to retain the
+     * original map.
      *
      * @param string $json
      * @return self
