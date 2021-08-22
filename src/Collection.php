@@ -3,8 +3,9 @@
 namespace Dambrogia\Candlestick;
 
 use Dambrogia\Candlestick\Concern\CollectionException;
+use JsonSerializable;
 
-class Collection
+class Collection implements JsonSerializable
 {
     protected $items = [];
     protected $adapter;
@@ -13,6 +14,32 @@ class Collection
     {
         $this->adapter = is_null($adapter) ? new Adapter() : $adapter;
         $this->setItems($items);
+    }
+
+    /**
+     * Used to serialize the collection.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return array_map(function (Candlestick $candle) {
+           return $candle->jsonSerialize();
+        }, $this->getItems());
+    }
+
+    /**
+     * This will create a new collection with the default map return those items
+     * from the new collection into the existing map to retain the original map.
+     *
+     * @param string $json
+     * @return self
+     */
+    public function jsonUnserialize(string $json)
+    {
+        $arr = json_decode($json, true);
+        $collection = new static($arr, null);
+        return $this->setItems($collection->getItems(), true);
     }
 
     /**
@@ -32,7 +59,7 @@ class Collection
 
     /**
      * Return the items in the collection.
-     * @return array
+     * @return Candlestick[]
      */
     public function getItems(): array
     {

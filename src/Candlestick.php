@@ -3,8 +3,9 @@
 namespace Dambrogia\Candlestick;
 
 use Dambrogia\Candlestick\Concern\CandlestickException;
+use JsonSerializable;
 
-class Candlestick
+class Candlestick implements JsonSerializable
 {
     /** @var float */
     protected $open;
@@ -94,9 +95,28 @@ class Candlestick
     }
 
     /**
+     * This is a loose relationship to the default mapping so that items can
+     * be re-serialized with the default mapping within a collection.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'open' => $this->open(),
+            'high' => $this->high(),
+            'low' => $this->low(),
+            'close' => $this->close(),
+            'volume' => $this->volume(),
+            'date' => $this->date(),
+        ];
+    }
+
+    /**
      * Transform the candle to an array.
      *
      * @return array
+     * @deprecated 1.0.0
      */
     public function toArray(): array
     {

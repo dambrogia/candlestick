@@ -79,6 +79,29 @@ final class CollectionTest extends TestCase
         $this->assertTrue($x->last()->open() == 2);
     }
 
+    public function testSerialization()
+    {
+        $items = $this->map([
+            [1, 1, 1, 1],
+            [2, 2, 2, 2],
+            [3, 3, 3, 3]
+        ]);
+
+        $collection = new Collection($items);
+        $serializable = $collection->jsonSerialize();
+        $serialized = json_encode($serializable);
+        $unserialized = (new Collection([]))->jsonUnserialize($serialized);
+
+        foreach ($collection->getItems() as $i => $candle) {
+            $this->assertEquals(
+                $candle->open(),
+                $unserialized->get($i)->open()
+            );
+        }
+
+
+    }
+
     /**
      * Helper for creating collections to test with.
      * @param array $array
