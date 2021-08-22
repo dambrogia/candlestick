@@ -24,7 +24,7 @@ class Collection implements JsonSerializable
     public function jsonSerialize()
     {
         return array_map(function (Candlestick $candle) {
-           return $candle->jsonSerialize();
+            return $candle->jsonSerialize();
         }, $this->getItems());
     }
 
